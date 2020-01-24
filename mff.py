@@ -1,4 +1,4 @@
-import vk_api
+﻿import vk_api
 from data import Data
 from bot import Listen, Checker
 import time

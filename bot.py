@@ -1,4 +1,4 @@
-from threading import Thread
+﻿from threading import Thread
 import imaplib
 from mail_check import Mail
 from vk_api.longpoll import VkLongPoll, VkEventType
