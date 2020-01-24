@@ -5,7 +5,7 @@ import base64
 class Mail:
 
     def __init__(self, mail, password):
-        self.mail = imaplib.IMAP4_SSL('imap.'+mail.split('@')[1])
+        self.mail = imaplib.IMAP4_SSL('imap.yandex.ru')
         self.mail.login(mail, password)
         self.mail.select()
         self.adress = mail
