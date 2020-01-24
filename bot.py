@@ -30,52 +30,52 @@ class Listen(Thread):
             try:
                 if not self.base.is_exist(text[1]):
                     Mail(text[1], text[2])
-                    self.base.add(self.event.user_id, text[1], text[2])
+                    self.base.add(self.event.chat_id, text[1], text[2])
                     print('email add')
                     self.vk.messages.send(
-                        user_id=self.event.user_id,
+                        chat_id=self.event.chat_id,
                         message='Your e-mail add',
                         random_id=random.randint(1,99999999)
                     )
                     UPDATE = True
                 else:
                     self.vk.messages.send(
-                        user_id=self.event.user_id,
+                        chat_id=self.event.chat_id,
                         message='Your e-mal already added',
                         random_id=random.randint(1,99999999)
                     )
             except imaplib.IMAP4.error:
                 self.vk.messages.send(
-                    user_id=self.event.user_id,
+                    chat_id=self.event.chat_id,
                     message='login failed',
                     random_id=random.randint(1,99999999)
                 )
         elif len(text) == 2 and text[0] == 'delmail':
             if self.base.is_exist(text[1]):
-                if self.base.get_id_by_mail(text[1])[0][0] == self.event.user_id:
+                if self.base.get_id_by_mail(text[1])[0][0] == self.event.chat_id:
                     self.base.dell(text[1])
                     self.vk.messages.send(
-                        user_id=self.event.user_id,
+                        chat_id=self.event.chat_id,
                         message='e-mail delete',
                         random_id=random.randint(1,99999999)
                     )
                     UPDATE = True
                 else:
                     self.vk.messages.send(
-                        user_id=self.event.user_id,
+                        chat_id=self.event.chat_id,
                         message='its not you e-mail',
                         random_id=random.randint(1,99999999)
                     )
             else:
                 self.vk.messages.send(
-                    user_id=self.event.user_id,
+                    chat_id=self.event.chat_id,
                     message='its e-mail not in use',
                     random_id=random.randint(1,99999999)
                 )
 
         else:
             self.vk.messages.send(
-                user_id=self.event.user_id,
+                chat_id=self.event.chat_id,
                 message='command not found',
                 random_id=random.randint(1,99999999)
             )
@@ -111,7 +111,7 @@ class Checker(Thread):
                         print('new e-mail')
                         print(self.base.get_id_by_mail(now.get_adress())[0][0], 'incoming email: '+now.get_adress()+':\n'+now.get_latest())
                         self.vk.messages.send(
-                            user_id=self.base.get_id_by_mail(now.get_adress())[0][0],
+                            chat_id=self.base.get_id_by_mail(now.get_adress())[0][0],
                             message='incoming e-mail: '+now.get_adress()+':\n'+now.get_latest(),
                             random_id=random.randint(1,99999999)
                         )
