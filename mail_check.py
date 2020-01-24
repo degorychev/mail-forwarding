@@ -52,6 +52,6 @@ class Mail:
             except:
                 continue
         if len(text) != 0:
-            return text[0]
+            return text[0][:4000]
         else:
             return 'receive not text mail'
