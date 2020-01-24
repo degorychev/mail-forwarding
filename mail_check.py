@@ -20,7 +20,7 @@ class Mail:
 
     def get_last_uid(self):
         self._select()
-        result, data = self.mail.uid('search', None, "ALL")  # Выполняет поиск и возвращает UID писем.
+        result, data = self.mail.uid('search', None, "ALL") 
         return data[0].split()[-1]
 
     def get_latest_raw(self):
@@ -54,4 +54,4 @@ class Mail:
         if len(text) != 0:
             return text[0]
         else:
-            return 'Вам пришло не текстовое сообщение.'
+            return 'receive not text mail'

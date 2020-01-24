@@ -12,13 +12,13 @@ class Listen(Thread):
         super().__init__()
         self.vk = vk
         self.vk_session = vk_session
-        print('Подключение к vk закончено')
+        print('Connect to vk')
         self.base = base
-        print('Подключение к базе данных закончена')
+        print('Connect to db')
         self.longpoll = VkLongPoll(self.vk_session)
 
     def run(self):
-        print('Начинаю прослушку')
+        print('start listening')
         for self.event in self.longpoll.listen():
             if self.event.type == VkEventType.MESSAGE_NEW and self.event.to_me:
                 self.on_command(self.event.text.split())
@@ -30,21 +30,21 @@ class Listen(Thread):
                 if not self.base.is_exist(text[1]):
                     Mail(text[1], text[2])
                     self.base.add(self.event.user_id, text[1], text[2])
-                    print('Почта добавлена')
+                    print('email add')
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='Ваша почта добавлена'
+                        message='Your e-mail add'
                     )
                     UPDATE = True
                 else:
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='Ваша почта уже добавлена в базу'
+                        message='Your e-mal already added'
                     )
             except imaplib.IMAP4.error:
                 self.vk.messages.send(
                     user_id=self.event.user_id,
-                    message='Неправильный логин или пароль'
+                    message='login failed'
                 )
         elif len(text) == 2 and text[0] == 'delmail':
             if self.base.is_exist(text[1]):
@@ -52,24 +52,24 @@ class Listen(Thread):
                     self.base.dell(text[1])
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='Почта удалена'
+                        message='e-mail delete'
                     )
                     UPDATE = True
                 else:
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='Данная почта вам не принадлежит'
+                        message='its not you e-mail'
                     )
             else:
                 self.vk.messages.send(
                     user_id=self.event.user_id,
-                    message='Данной почты нет в базе'
+                    message='its e-mail not in use'
                 )
 
         else:
             self.vk.messages.send(
                 user_id=self.event.user_id,
-                message='Команда не распознана'
+                message='command not found'
             )
 
 
@@ -79,7 +79,7 @@ class Checker(Thread):
         self.vk = vk
         self.base = base
         self.update()
-        print('Поток создан. Приступаю к активации')
+        print('thread create, start activate')
 
     def update(self):
         global UPDATE
@@ -87,24 +87,24 @@ class Checker(Thread):
         for mail in self.base.get_all_mail_with_password():
             self.mails.append(Mail(mail[0], mail[1]))
         UPDATE = False
-        print('Внутренняя система обновлена.')
+        print('system upgrade')
 
     def run(self):
-        print('Запускаю проверку почты')
+        print('start e-mail check')
         while True:
             time.sleep(10)
             if UPDATE:
                 self.update()
-            print('Поиск начался')
+            print('Search start')
             for now in self.mails:
                 with Profiler():
 #                    print(now.get_adress(), now.get_last_uid(), self.base.get_luid(now.get_adress()))
                     if now.get_last_uid() != self.base.get_luid(now.get_adress()):
-                        print('Найдено новое сообщение')
-                        print(self.base.get_id_by_mail(now.get_adress())[0][0], 'Вам новое сообщение с '+now.get_adress()+':\n'+now.get_latest())
+                        print('new e-mail')
+                        print(self.base.get_id_by_mail(now.get_adress())[0][0], 'incoming email: '+now.get_adress()+':\n'+now.get_latest())
                         self.vk.messages.send(
                             user_id=self.base.get_id_by_mail(now.get_adress())[0][0],
-                            message='Вам новое сообщение с '+now.get_adress()+':\n'+now.get_latest()
+                            message='incoming e-mail: '+now.get_adress()+':\n'+now.get_latest()
                         )
                         self.base.set_luid(now.get_adress(), now.get_last_uid())
 
@@ -113,4 +113,4 @@ class Profiler(object):
         self._startTime = time.time()
 
     def __exit__(self, type, value, traceback):
-        print("Время проверки: {:.3f} sec".format(time.time() - self._startTime))
+        print("time check: {:.3f} sec".format(time.time() - self._startTime))
