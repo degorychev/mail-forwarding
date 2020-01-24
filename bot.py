@@ -3,6 +3,7 @@ import imaplib
 from mail_check import Mail
 from vk_api.longpoll import VkLongPoll, VkEventType
 import time
+import random
 
 UPDATE = False
 
@@ -33,18 +34,21 @@ class Listen(Thread):
                     print('email add')
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='Your e-mail add'
+                        message='Your e-mail add',
+                        random_id=random.randint(1,99999999)
                     )
                     UPDATE = True
                 else:
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='Your e-mal already added'
+                        message='Your e-mal already added',
+                        random_id=random.randint(1,99999999)
                     )
             except imaplib.IMAP4.error:
                 self.vk.messages.send(
                     user_id=self.event.user_id,
-                    message='login failed'
+                    message='login failed',
+                    random_id=random.randint(1,99999999)
                 )
         elif len(text) == 2 and text[0] == 'delmail':
             if self.base.is_exist(text[1]):
@@ -52,24 +56,28 @@ class Listen(Thread):
                     self.base.dell(text[1])
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='e-mail delete'
+                        message='e-mail delete',
+                        random_id=random.randint(1,99999999)
                     )
                     UPDATE = True
                 else:
                     self.vk.messages.send(
                         user_id=self.event.user_id,
-                        message='its not you e-mail'
+                        message='its not you e-mail',
+                        random_id=random.randint(1,99999999)
                     )
             else:
                 self.vk.messages.send(
                     user_id=self.event.user_id,
-                    message='its e-mail not in use'
+                    message='its e-mail not in use',
+                    random_id=random.randint(1,99999999)
                 )
 
         else:
             self.vk.messages.send(
                 user_id=self.event.user_id,
-                message='command not found'
+                message='command not found',
+                random_id=random.randint(1,99999999)
             )
 
 
@@ -104,7 +112,8 @@ class Checker(Thread):
                         print(self.base.get_id_by_mail(now.get_adress())[0][0], 'incoming email: '+now.get_adress()+':\n'+now.get_latest())
                         self.vk.messages.send(
                             user_id=self.base.get_id_by_mail(now.get_adress())[0][0],
-                            message='incoming e-mail: '+now.get_adress()+':\n'+now.get_latest()
+                            message='incoming e-mail: '+now.get_adress()+':\n'+now.get_latest(),
+                            random_id=random.randint(1,99999999)
                         )
                         self.base.set_luid(now.get_adress(), now.get_last_uid())
 
